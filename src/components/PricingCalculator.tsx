@@ -59,6 +59,18 @@ export default function PricingCalculator() {
     return Math.round(parseFloat(selectedMargin) * 100);
   };
 
+  const getPricePerSticker = () => {
+    if (!currentQuoteData) return 0;
+    const totalPrice = getCurrentPrice();
+    const quantity = parseInt(selectedQuantity.replace('x', ''));
+    return totalPrice / quantity;
+  };
+
+  const getQuantityNumber = () => {
+    if (!selectedQuantity) return 0;
+    return parseInt(selectedQuantity.replace('x', ''));
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
@@ -170,6 +182,12 @@ export default function PricingCalculator() {
                 <span className="text-gray-600">Base Cost:</span>
                 <span className="font-semibold">
                   {currentQuoteData ? `$${currentQuoteData.data.costWithLam.toFixed(2)}` : '-'}
+                </span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-gray-100">
+                <span className="text-gray-600">Price per Sticker:</span>
+                <span className="font-semibold">
+                  {currentQuoteData ? `$${getPricePerSticker().toFixed(3)}` : '-'}
                 </span>
               </div>
               <div className="flex justify-between py-2 border-b border-gray-100">
