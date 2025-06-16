@@ -66,11 +66,6 @@ export default function PricingCalculator() {
     return totalPrice / quantity;
   };
 
-  const getQuantityNumber = () => {
-    if (!selectedQuantity) return 0;
-    return parseInt(selectedQuantity.replace('x', ''));
-  };
-
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
