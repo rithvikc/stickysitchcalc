@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sticky Sitch Pricing Calculator",
-  description: "Circle or Square BOPP w/ LAM - Quick Quote Generator",
+  title: "Sticky Sitch Pricing Calculator | Impressd Consulting",
+  description: "Professional sticker pricing calculator by Impressd Consulting - Circle/Square, Rectangle/Oval, Budget & Sheeted options",
 };
 
 export default function RootLayout({

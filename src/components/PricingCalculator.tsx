@@ -5,6 +5,7 @@ import { Calculator, Sparkles, DollarSign, TrendingUp, Package, Award } from 'lu
 import { pricingData, budgetRolls, rectangleOvalRolls, sheetedStickers } from '@/data/pricing';
 import { QuoteData } from '@/types/pricing';
 import PricingGrid from './PricingGrid';
+import Image from 'next/image';
 
 export default function PricingCalculator() {
   const [selectedSize, setSelectedSize] = useState('');
@@ -237,15 +238,27 @@ export default function PricingCalculator() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Header */}
+      {/* Header with Impressd Consulting Branding */}
       <div className="bg-white/10 backdrop-blur-lg rounded-3xl p-8 mb-8 text-center text-white">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <Calculator className="w-8 h-8" />
-          <h1 className="text-4xl font-bold">Sticky Sitch Pricing Calculator</h1>
-          <Sparkles className="w-8 h-8" />
+        <div className="flex items-center justify-center gap-4 mb-6">
+          <Image
+            src="/impressd.png"
+            alt="Impressd Consulting"
+            width={60}
+            height={60}
+            className="rounded-lg shadow-lg"
+          />
+          <div className="text-left">
+            <h1 className="text-4xl font-bold">Sticky Sitch Pricing Calculator</h1>
+            <p className="text-lg opacity-80 mt-1">Powered by Impressd Consulting</p>
+          </div>
         </div>
-        <p className="text-xl opacity-90">Professional Sticker Pricing - Sales Team Quick Quote Tool</p>
-        <p className="text-sm opacity-75 mt-2">Circle/Square • Rectangle/Oval • Budget Options • Sheeted Stickers</p>
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <Calculator className="w-6 h-6" />
+          <p className="text-xl opacity-90">Professional Sticker Pricing - Sales Team Quick Quote Tool</p>
+          <Sparkles className="w-6 h-6" />
+        </div>
+        <p className="text-sm opacity-75">Circle/Square • Rectangle/Oval • Budget Options • Sheeted Stickers</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -549,6 +562,26 @@ export default function PricingCalculator() {
           />
         </div>
       )}
+
+      {/* Footer with Impressd Consulting Branding */}
+      <div className="mt-12 bg-white/10 backdrop-blur-lg rounded-3xl p-6 text-center text-white">
+        <div className="flex items-center justify-center gap-3 mb-3">
+          <Image
+            src="/impressd.png"
+            alt="Impressd Consulting"
+            width={40}
+            height={40}
+            className="rounded-lg"
+          />
+          <div className="text-left">
+            <h3 className="text-lg font-semibold">Impressd Consulting</h3>
+            <p className="text-sm opacity-80">Professional Business Solutions</p>
+          </div>
+        </div>
+        <p className="text-sm opacity-70">
+          This pricing calculator was developed by Impressd Consulting to streamline your sales process
+        </p>
+      </div>
     </div>
   );
 } 
