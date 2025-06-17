@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Calculator, Sparkles, DollarSign, TrendingUp, Package, Users, Award } from 'lucide-react';
-import { pricingData, budgetRolls, rectangleOvalRolls, sheetedStickers, pricingConfig } from '@/data/pricing';
+import { Calculator, Sparkles, DollarSign, TrendingUp, Package, Award } from 'lucide-react';
+import { pricingData, budgetRolls, rectangleOvalRolls, sheetedStickers } from '@/data/pricing';
 import { QuoteData } from '@/types/pricing';
 import PricingGrid from './PricingGrid';
 
@@ -290,7 +290,7 @@ export default function PricingCalculator() {
               </label>
               <select
                 value={selectedProductType}
-                onChange={(e) => setSelectedProductType(e.target.value as any)}
+                onChange={(e) => setSelectedProductType(e.target.value as 'auto' | 'circleSquare' | 'budget' | 'sheeted' | 'rectangleOval')}
                 className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white"
               >
                 <option value="auto">Auto-Select (Recommended)</option>

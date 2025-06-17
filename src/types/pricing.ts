@@ -4,8 +4,8 @@ export interface PricingItem {
   margins: {
     [key: string]: number;
   };
-  stickySitchPrice: number;
-  profit: number;
+  stickySitchPrice?: number;
+  profit?: number;
   productType: 'circleSquare' | 'rectangleOval' | 'budget' | 'sheeted';
   // Optional fields for budget rolls
   competitorOSP?: number;
@@ -22,6 +22,18 @@ export interface PricingItem {
 }
 
 export interface PricingData {
+  [size: string]: PricingItem[];
+}
+
+export interface BudgetRolls {
+  [size: string]: PricingItem[];
+}
+
+export interface RectangleOvalRolls {
+  [size: string]: PricingItem[];
+}
+
+export interface SheetedStickers {
   [size: string]: PricingItem[];
 }
 

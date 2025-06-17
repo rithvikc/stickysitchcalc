@@ -1,4 +1,4 @@
-import { PricingData } from '@/types/pricing';
+import { PricingData, BudgetRolls, RectangleOvalRolls, SheetedStickers } from '@/types/pricing';
 
 export const pricingConfig = {
   "currency": "AUD",
@@ -76,7 +76,7 @@ export const pricingData: PricingData = {
 };
 
 // Budget rolls for quantities under 500
-export const budgetRolls = {
+export const budgetRolls: BudgetRolls = {
   "30 x 30 mm": [
     {"quantity": "x100", "costWithLam": 60, "margins": {"0.5": 90, "0.8": 108}, "competitorOSP": 77, "recommendedSell": 69, "productType": "budget"},
     {"quantity": "x200", "costWithLam": 60, "margins": {"0.5": 90, "0.8": 108}, "competitorOSP": 91, "recommendedSell": 82, "productType": "budget"},
@@ -97,7 +97,7 @@ export const budgetRolls = {
 };
 
 // Rectangle/Oval shapes
-export const rectangleOvalRolls = {
+export const rectangleOvalRolls: RectangleOvalRolls = {
   "30 x 45 mm": [
     {"quantity": "x500", "costWithLam": 120, "margins": {"0.5": 180, "0.6": 192, "0.7": 204, "0.8": 216, "0.9": 228, "1.0": 240}, "productType": "rectangleOval"},
     {"quantity": "x1000", "costWithLam": 120, "margins": {"0.5": 180, "0.6": 192, "0.7": 204, "0.8": 216, "0.9": 228, "1.0": 240}, "productType": "rectangleOval"},
@@ -111,7 +111,7 @@ export const rectangleOvalRolls = {
 };
 
 // Sheeted stickers with detailed cost breakdown
-export const sheetedStickers = {
+export const sheetedStickers: SheetedStickers = {
   "30 x 30 mm": [
     {"quantity": "x30", "sheetsNeeded": 1, "materialCost": 0.23, "inkCost": 0.25, "totalCost": 10.48, "gigiPrice": 26, "shippingPackaging": 10, "ourSellPrice": 27, "profit": 16, "finalSellPrice": 47, "productType": "sheeted"},
     {"quantity": "x100", "sheetsNeeded": 3, "materialCost": 0.68, "inkCost": 0.75, "totalCost": 11.43, "gigiPrice": 30, "shippingPackaging": 10, "ourSellPrice": 28, "profit": 16, "finalSellPrice": 48, "productType": "sheeted"},
