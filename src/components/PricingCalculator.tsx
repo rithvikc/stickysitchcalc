@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Calculator, Sparkles } from 'lucide-react';
+import { Calculator, Sparkles, DollarSign, TrendingUp } from 'lucide-react';
 import { pricingData } from '@/data/pricing';
 import { QuoteData } from '@/types/pricing';
 import PricingGrid from './PricingGrid';
@@ -66,6 +66,31 @@ export default function PricingCalculator() {
     return totalPrice / quantity;
   };
 
+  const getProfit = () => {
+    if (!currentQuoteData) return 0;
+    return getCurrentPrice() - currentQuoteData.data.costWithLam;
+  };
+
+  const getProfitPerSticker = () => {
+    if (!currentQuoteData) return 0;
+    const profit = getProfit();
+    const quantity = parseInt(selectedQuantity.replace('x', ''));
+    return profit / quantity;
+  };
+
+  const handleMarginSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedMargin(e.target.value);
+  };
+
+  const getMarginLabel = (margin: string) => {
+    const percent = Math.round(parseFloat(margin) * 100);
+    if (percent <= 60) return 'Standard';
+    if (percent <= 70) return 'Recommended';
+    if (percent <= 80) return 'Premium';
+    if (percent <= 90) return 'High';
+    return 'Maximum';
+  };
+
   return (
     <div className="max-w-7xl mx-auto">
       {/* Header */}
@@ -75,7 +100,7 @@ export default function PricingCalculator() {
           <h1 className="text-4xl font-bold">Sticky Sitch Pricing Calculator</h1>
           <Sparkles className="w-8 h-8" />
         </div>
-        <p className="text-xl opacity-90">Circle or Square BOPP w/ LAM - Quick Quote Generator</p>
+        <p className="text-xl opacity-90">Circle or Square BOPP w/ LAM - Sales Team Quick Quote Tool</p>
       </div>
 
       <div className="grid lg:grid-cols-2 gap-8">
@@ -121,23 +146,52 @@ export default function PricingCalculator() {
               </select>
             </div>
 
-            {/* Margin Selection */}
+            {/* Margin Slider */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Select Profit Margin
+                Profit Margin: {getMarginPercent()}% ({getMarginLabel(selectedMargin)})
               </label>
-              <select
-                value={selectedMargin}
-                onChange={(e) => setSelectedMargin(e.target.value)}
-                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white"
-              >
-                <option value="0.5">50% (0.5x) - Minimum</option>
-                <option value="0.6">60% (0.6x) - Standard</option>
-                <option value="0.7">70% (0.7x) - Recommended</option>
-                <option value="0.8">80% (0.8x) - Premium</option>
-                <option value="0.9">90% (0.9x) - High</option>
-                <option value="1.0">100% (1.0x) - Maximum</option>
-              </select>
+              <div className="space-y-3">
+                <input
+                  type="range"
+                  min="0.5"
+                  max="1.0"
+                  step="0.1"
+                  value={selectedMargin}
+                  onChange={handleMarginSliderChange}
+                  className="w-full h-3 bg-gradient-to-r from-green-200 via-blue-200 to-purple-200 rounded-lg appearance-none cursor-pointer slider"
+                />
+                <div className="flex justify-between text-xs text-gray-500">
+                  <span>50% (Min)</span>
+                  <span>60%</span>
+                  <span>70% (Rec)</span>
+                  <span>80%</span>
+                  <span>90%</span>
+                  <span>100% (Max)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Margin Buttons */}
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Quick Select
+              </label>
+              <div className="grid grid-cols-3 gap-2">
+                {['0.6', '0.7', '0.8'].map(margin => (
+                  <button
+                    key={margin}
+                    onClick={() => setSelectedMargin(margin)}
+                    className={`p-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+                      selectedMargin === margin
+                        ? 'bg-blue-500 text-white shadow-lg'
+                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {Math.round(parseFloat(margin) * 100)}%
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -150,9 +204,31 @@ export default function PricingCalculator() {
             <div className="text-5xl font-bold text-blue-600 mb-2">
               ${getCurrentPrice().toFixed(2)}
             </div>
-            <div className="text-gray-600">
+            <div className="text-gray-600 mb-4">
               {currentQuoteData ? `${getMarginPercent()}% Margin (${selectedMargin}x)` : 'Select options to see pricing'}
             </div>
+            {currentQuoteData && (
+              <div className="grid grid-cols-2 gap-4 mt-4">
+                <div className="bg-white/70 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <DollarSign className="w-4 h-4 text-green-600" />
+                    <span className="text-sm text-gray-600">Profit</span>
+                  </div>
+                  <div className="text-xl font-bold text-green-600">
+                    ${getProfit().toFixed(2)}
+                  </div>
+                </div>
+                <div className="bg-white/70 rounded-lg p-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <TrendingUp className="w-4 h-4 text-purple-600" />
+                    <span className="text-sm text-gray-600">Per Unit</span>
+                  </div>
+                  <div className="text-xl font-bold text-purple-600">
+                    ${getProfitPerSticker().toFixed(3)}
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Quote Details */}
@@ -186,6 +262,18 @@ export default function PricingCalculator() {
                 </span>
               </div>
               <div className="flex justify-between py-2 border-b border-gray-100">
+                <span className="text-gray-600">Profit per Sticker:</span>
+                <span className="font-semibold text-green-600">
+                  {currentQuoteData ? `$${getProfitPerSticker().toFixed(3)}` : '-'}
+                </span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-gray-100">
+                <span className="text-gray-600">Total Profit:</span>
+                <span className="font-semibold text-green-600">
+                  {currentQuoteData ? `$${getProfit().toFixed(2)}` : '-'}
+                </span>
+              </div>
+              <div className="flex justify-between py-2 border-b border-gray-100">
                 <span className="text-gray-600">Margin:</span>
                 <span className="font-semibold">{`${getMarginPercent()}% (${selectedMargin}x)`}</span>
               </div>
@@ -205,6 +293,7 @@ export default function PricingCalculator() {
             pricingItem={currentQuoteData.data}
             selectedMargin={selectedMargin}
             onMarginSelect={setSelectedMargin}
+            quantity={selectedQuantity}
           />
         </div>
       )}
