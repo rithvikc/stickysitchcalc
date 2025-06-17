@@ -71,6 +71,34 @@ export default function PricingCalculator() {
     return data?.map(item => item.quantity) || [];
   };
 
+  // Get all available quantities for a size (for dropdown population)
+  const getAllQuantitiesForSize = (size: string) => {
+    if (!size) return [];
+    
+    const allQuantities = new Set<string>();
+    
+    // Check all product types for this size and collect quantities
+    if (pricingData[size]) {
+      pricingData[size].forEach(item => allQuantities.add(item.quantity));
+    }
+    if (budgetRolls[size]) {
+      budgetRolls[size].forEach(item => allQuantities.add(item.quantity));
+    }
+    if (rectangleOvalRolls[size]) {
+      rectangleOvalRolls[size].forEach(item => allQuantities.add(item.quantity));
+    }
+    if (sheetedStickers[size]) {
+      sheetedStickers[size].forEach(item => allQuantities.add(item.quantity));
+    }
+    
+    // Sort quantities numerically
+    return Array.from(allQuantities).sort((a, b) => {
+      const numA = parseInt(a.replace('x', ''));
+      const numB = parseInt(b.replace('x', ''));
+      return numA - numB;
+    });
+  };
+
   const calculatePricing = useCallback(() => {
     if (!selectedSize || !selectedQuantity) {
       setCurrentQuoteData(null);
@@ -123,8 +151,7 @@ export default function PricingCalculator() {
 
   const handleQuantitySliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const sliderValue = parseInt(e.target.value);
-    const actualProductType = determineProductType(selectedSize, selectedQuantity, selectedShape, selectedProductType);
-    const quantities = getQuantitiesForSize(selectedSize, actualProductType);
+    const quantities = getAllQuantitiesForSize(selectedSize);
     if (quantities[sliderValue]) {
       setSelectedQuantity(quantities[sliderValue]);
     }
@@ -132,8 +159,7 @@ export default function PricingCalculator() {
 
   const getCurrentQuantitySliderValue = () => {
     if (!selectedSize || !selectedQuantity) return 0;
-    const actualProductType = determineProductType(selectedSize, selectedQuantity, selectedShape, selectedProductType);
-    const quantities = getQuantitiesForSize(selectedSize, actualProductType);
+    const quantities = getAllQuantitiesForSize(selectedSize);
     return quantities.indexOf(selectedQuantity);
   };
 
@@ -345,7 +371,7 @@ export default function PricingCalculator() {
                 className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed mb-4"
               >
                 <option value="">Choose quantity...</option>
-                {selectedSize && getQuantitiesForSize(selectedSize, determineProductType(selectedSize, selectedQuantity, selectedShape, selectedProductType)).map(quantity => (
+                {selectedSize && getAllQuantitiesForSize(selectedSize).map(quantity => (
                   <option key={quantity} value={quantity}>
                     {quantity.replace('x', '')} pieces
                   </option>
@@ -362,14 +388,14 @@ export default function PricingCalculator() {
                   <input
                     type="range"
                     min="0"
-                    max={getQuantitiesForSize(selectedSize, determineProductType(selectedSize, selectedQuantity, selectedShape, selectedProductType)).length - 1}
+                    max={getAllQuantitiesForSize(selectedSize).length - 1}
                     step="1"
                     value={getCurrentQuantitySliderValue()}
                     onChange={handleQuantitySliderChange}
                     className="w-full h-3 bg-gradient-to-r from-orange-200 via-yellow-200 to-green-200 rounded-lg appearance-none cursor-pointer slider"
                   />
                   <div className="flex justify-between text-xs text-gray-500">
-                    {getQuantitiesForSize(selectedSize, determineProductType(selectedSize, selectedQuantity, selectedShape, selectedProductType)).map((qty, index) => (
+                    {getAllQuantitiesForSize(selectedSize).map((qty, index) => (
                       <span key={index} className="text-center">
                         {qty.replace('x', '')}
                       </span>
