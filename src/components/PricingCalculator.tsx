@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Calculator, Sparkles, DollarSign, TrendingUp } from 'lucide-react';
+import { Calculator, Sparkles, DollarSign, TrendingUp, Package } from 'lucide-react';
 import { pricingData } from '@/data/pricing';
 import { QuoteData } from '@/types/pricing';
 import PricingGrid from './PricingGrid';
@@ -16,6 +16,16 @@ export default function PricingCalculator() {
 
   const getQuantitiesForSize = (size: string) => {
     return pricingData[size]?.map(item => item.quantity) || [];
+  };
+
+  // Create a mapping for quantity slider
+  const getQuantityOptions = (size: string) => {
+    const quantities = getQuantitiesForSize(size);
+    return quantities.map((qty, index) => ({
+      value: index,
+      quantity: qty,
+      label: qty.replace('x', '') + ' pieces'
+    }));
   };
 
   const calculatePricing = useCallback(() => {
@@ -48,6 +58,20 @@ export default function PricingCalculator() {
 
   const handleQuantityChange = (quantity: string) => {
     setSelectedQuantity(quantity);
+  };
+
+  const handleQuantitySliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const sliderValue = parseInt(e.target.value);
+    const quantities = getQuantitiesForSize(selectedSize);
+    if (quantities[sliderValue]) {
+      setSelectedQuantity(quantities[sliderValue]);
+    }
+  };
+
+  const getCurrentQuantitySliderValue = () => {
+    if (!selectedSize || !selectedQuantity) return 0;
+    const quantities = getQuantitiesForSize(selectedSize);
+    return quantities.indexOf(selectedQuantity);
   };
 
   const getCurrentPrice = () => {
@@ -126,16 +150,18 @@ export default function PricingCalculator() {
               </select>
             </div>
 
-            {/* Quantity Selection */}
+            {/* Quantity Selection with Slider */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Select Quantity
               </label>
+              
+              {/* Quantity Dropdown */}
               <select
                 value={selectedQuantity}
                 onChange={(e) => handleQuantityChange(e.target.value)}
                 disabled={!selectedSize}
-                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed"
+                className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all duration-200 bg-white disabled:bg-gray-100 disabled:cursor-not-allowed mb-4"
               >
                 <option value="">Choose quantity...</option>
                 {getQuantitiesForSize(selectedSize).map(quantity => (
@@ -144,6 +170,32 @@ export default function PricingCalculator() {
                   </option>
                 ))}
               </select>
+
+              {/* Quantity Slider */}
+              {selectedSize && (
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2 text-sm text-gray-600">
+                    <Package className="w-4 h-4" />
+                    <span>Quick Quantity Adjust</span>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max={getQuantitiesForSize(selectedSize).length - 1}
+                    step="1"
+                    value={getCurrentQuantitySliderValue()}
+                    onChange={handleQuantitySliderChange}
+                    className="w-full h-3 bg-gradient-to-r from-orange-200 via-yellow-200 to-green-200 rounded-lg appearance-none cursor-pointer slider"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    {getQuantitiesForSize(selectedSize).map((qty, index) => (
+                      <span key={index} className="text-center">
+                        {qty.replace('x', '')}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Margin Slider */}
