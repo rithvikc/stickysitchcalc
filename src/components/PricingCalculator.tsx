@@ -50,27 +50,6 @@ export default function PricingCalculator() {
     return 'circleSquare';
   };
 
-  // Get quantities based on product type and size
-  const getQuantitiesForSize = (size: string, productType: string) => {
-    let data;
-    switch (productType) {
-      case 'budget':
-        data = budgetRolls[size];
-        break;
-      case 'rectangleOval':
-        data = rectangleOvalRolls[size];
-        break;
-      case 'sheeted':
-        data = sheetedStickers[size];
-        break;
-      case 'circleSquare':
-      default:
-        data = pricingData[size];
-        break;
-    }
-    return data?.map(item => item.quantity) || [];
-  };
-
   // Get all available quantities for a size (for dropdown population)
   const getAllQuantitiesForSize = (size: string) => {
     if (!size) return [];
