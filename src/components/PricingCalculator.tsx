@@ -175,7 +175,25 @@ export default function PricingCalculator() {
       return currentQuoteData.data.finalSellPrice || 0;
     }
     
-    return currentQuoteData.data.margins?.[selectedMargin] || 0;
+    // For standard products, lookup the margin price
+    if (currentQuoteData.data.margins) {
+      // First try exact match
+      if (currentQuoteData.data.margins[selectedMargin]) {
+        return currentQuoteData.data.margins[selectedMargin];
+      }
+      
+      // If exact match fails, try to find the closest margin (for floating point precision issues)
+      const availableMargins = Object.keys(currentQuoteData.data.margins);
+      const targetMargin = parseFloat(selectedMargin);
+      
+      for (const margin of availableMargins) {
+        if (Math.abs(parseFloat(margin) - targetMargin) < 0.01) {
+          return currentQuoteData.data.margins[margin];
+        }
+      }
+    }
+    
+    return 0;
   };
 
   const getMarginPercent = () => {
@@ -212,7 +230,10 @@ export default function PricingCalculator() {
   };
 
   const handleMarginSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedMargin(e.target.value);
+    const value = parseFloat(e.target.value);
+    // Round to 1 decimal place to avoid floating point precision issues
+    const roundedValue = Math.round(value * 10) / 10;
+    setSelectedMargin(roundedValue.toString());
   };
 
   const getMarginLabel = (margin: string) => {
@@ -439,8 +460,8 @@ export default function PricingCalculator() {
                 <label className="block text-sm font-semibold text-gray-700 mb-2">
                   Quick Select
                 </label>
-                <div className="grid grid-cols-3 gap-2">
-                  {['0.6', '0.7', '0.8'].map(margin => (
+                <div className="grid grid-cols-4 gap-2">
+                  {['0.6', '0.7', '0.8', '1.0'].map(margin => (
                     <button
                       key={margin}
                       onClick={() => setSelectedMargin(margin)}
