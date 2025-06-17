@@ -141,14 +141,14 @@ export default function PricingCalculator() {
     
     // Handle different product types
     if (currentQuoteData.data.productType === 'budget') {
-      return currentQuoteData.data.recommendedSell || currentQuoteData.data.margins[selectedMargin] || 0;
+      return currentQuoteData.data.recommendedSell || (currentQuoteData.data.margins?.[selectedMargin]) || 0;
     }
     
     if (currentQuoteData.data.productType === 'sheeted') {
       return currentQuoteData.data.finalSellPrice || 0;
     }
     
-    return currentQuoteData.data.margins[selectedMargin] || 0;
+    return currentQuoteData.data.margins?.[selectedMargin] || 0;
   };
 
   const getMarginPercent = () => {
@@ -171,10 +171,10 @@ export default function PricingCalculator() {
     
     if (currentQuoteData.data.productType === 'budget') {
       const recommendedPrice = currentQuoteData.data.recommendedSell || 0;
-      return recommendedPrice - currentQuoteData.data.costWithLam;
+      return recommendedPrice - (currentQuoteData.data.costWithLam || 0);
     }
     
-    return getCurrentPrice() - currentQuoteData.data.costWithLam;
+    return getCurrentPrice() - (currentQuoteData.data.costWithLam || 0);
   };
 
   const getProfitPerSticker = () => {
@@ -502,7 +502,7 @@ export default function PricingCalculator() {
               <div className="flex justify-between py-2 border-b border-gray-100">
                 <span className="text-gray-600">Base Cost:</span>
                 <span className="font-semibold">
-                  {currentQuoteData ? `$${currentQuoteData.data.costWithLam.toFixed(2)}` : '-'}
+                  {currentQuoteData ? `$${(currentQuoteData.data.costWithLam || 0).toFixed(2)}` : '-'}
                 </span>
               </div>
               <div className="flex justify-between py-2 border-b border-gray-100">

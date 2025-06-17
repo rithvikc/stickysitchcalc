@@ -1,7 +1,7 @@
 export interface PricingItem {
   quantity: string;
-  costWithLam: number;
-  margins: {
+  costWithLam?: number;
+  margins?: {
     [key: string]: number;
   };
   stickySitchPrice?: number;
