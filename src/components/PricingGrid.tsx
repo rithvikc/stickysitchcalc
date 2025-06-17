@@ -22,15 +22,20 @@ export default function PricingGrid({ pricingItem, selectedMargin, onMarginSelec
   };
 
   const getProfit = (totalPrice: number) => {
-    return totalPrice - pricingItem.costWithLam;
+    return totalPrice - (pricingItem.costWithLam || 0);
   };
+
+  // Don't render if no margins data (for sheeted stickers, budget rolls, etc.)
+  if (!pricingItem.margins) {
+    return null;
+  }
 
   return (
     <div className="bg-white rounded-3xl p-8 shadow-2xl">
       <h3 className="text-2xl font-bold text-gray-800 mb-6">All Pricing Options</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {margins.map(margin => {
-          const price = pricingItem.margins[margin];
+          const price = pricingItem.margins?.[margin];
           if (!price) return null;
           
           return (
